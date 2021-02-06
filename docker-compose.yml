@@ -1,0 +1,35 @@
+# Docker Compose file Reference (https://docs.docker.com/compose/compose-file/)
+
+version: "3"
+
+# Define services
+services:
+  # App Service
+  app:
+    # Configuration for building the docker image for the service
+    build:
+      context: ./httpapi # Use an image built from the specified dockerfile in the current directory.
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000" # Forward the exposed port 5000 on the container to port 5000 on the host machine
+    restart: unless-stopped
+    depends_on:
+      - rabbitmq
+
+
+  server:
+    # Configuration for building the docker image for the service
+    build:
+      context: ./product # Use an image built from the specified dockerfile in the current directory.
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    ports:
+         - 5672:5672
+    restart: unless-stopped
+
+
